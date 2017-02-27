@@ -1,11 +1,18 @@
 #ifndef __RAY_MATH_TOOLKIT_H
 #define __RAY_MATH_TOOLKIT_H
 
+#if defined(__GNUC__)
+#define FORCEDINLINE __attribute__((always_inline))
+#else
+#define FORCEDINLINE
+#endif
+
+
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
 
-static inline
+static FORCEDINLINE
 void normalize(double *v)
 {
     double d = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
@@ -16,13 +23,13 @@ void normalize(double *v)
     v[2] /= d;
 }
 
-static inline
+static FORCEDINLINE
 double length(const double *v)
 {
     return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
-static inline
+static FORCEDINLINE
 void add_vector(const double *a, const double *b, double *out)
 {
     out[0] = a[0] + b[0];
@@ -30,7 +37,7 @@ void add_vector(const double *a, const double *b, double *out)
     out[2] = a[2] + b[2];
 }
 
-static inline
+static FORCEDINLINE
 void subtract_vector(const double *a, const double *b, double *out)
 {
     out[0] = a[0] - b[0];
@@ -38,7 +45,7 @@ void subtract_vector(const double *a, const double *b, double *out)
     out[2] = a[2] - b[2];
 }
 
-static inline
+static FORCEDINLINE
 void multiply_vectors(const double *a, const double *b, double *out)
 {
     out[0] = a[0] * b[0];
@@ -46,7 +53,7 @@ void multiply_vectors(const double *a, const double *b, double *out)
     out[2] = a[2] * b[2];
 }
 
-static inline
+static FORCEDINLINE
 void multiply_vector(const double *a, double b, double *out)
 {
     out[0] = a[0] * b;
@@ -54,7 +61,7 @@ void multiply_vector(const double *a, double b, double *out)
     out[2] = a[2] * b;
 }
 
-static inline
+static FORCEDINLINE
 void cross_product(const double *v1, const double *v2, double *out)
 {
     out[0] = v1[1] * v2[2] - v1[2] * v2[1];
@@ -62,7 +69,7 @@ void cross_product(const double *v1, const double *v2, double *out)
     out[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-static inline
+static FORCEDINLINE
 double dot_product(const double *v1, const double *v2)
 {
     double dp = 0.0;
@@ -70,7 +77,7 @@ double dot_product(const double *v1, const double *v2)
     return dp;
 }
 
-static inline
+static FORCEDINLINE
 void scalar_triple_product(const double *u, const double *v, const double *w,
                            double *out)
 {
@@ -78,7 +85,7 @@ void scalar_triple_product(const double *u, const double *v, const double *w,
     multiply_vectors(u, out, out);
 }
 
-static inline
+static FORCEDINLINE
 double scalar_triple(const double *u, const double *v, const double *w)
 {
     double tmp[3];
