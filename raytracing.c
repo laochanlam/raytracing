@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "math-toolkit.h"
 #include "primitives.h"
@@ -337,8 +338,9 @@ static void calculateBasisVectors(point3 u, point3 v, point3 w,
 /* @brief protect color value overflow */
 static void protect_color_overflow(color c)
 {
-    for (int i = 0; i < 3; i++)
-        if (c[i] > 1.0) c[i] = 1.0;
+    if (c[0] > 1.0) c[0] = 1.0;
+    if (c[1] > 1.0) c[1] = 1.0;
+    if (c[2] > 1.0) c[2] = 1.0;
 }
 
 static unsigned int ray_color(const point3 e, double t,
@@ -467,11 +469,15 @@ void raytracing(uint8_t *pixels, color background_color,
     idx_stack stk;
 
     int factor = sqrt(SAMPLES);
-    for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
-            double r = 0, g = 0, b = 0;
+
+    int i,j,s;
+    double r,g,b;
+    #pragma omp parallel for private(i,s,r,g,b,object_color,stk,d)
+    for ( j = 0; j < height; j++) {
+        for ( i = 0; i < width; i++) {
+            r = 0, g = 0, b = 0;
             /* MSAA */
-            for (int s = 0; s < SAMPLES; s++) {
+            for ( s = 0; s < SAMPLES; s++) {
                 idx_stack_init(&stk);
                 rayConstruction(d, u, v, w,
                                 i * factor + s / factor,
